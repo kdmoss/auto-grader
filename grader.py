@@ -2,6 +2,7 @@
 
 import requests
 import pandas
+import math
 import json
 import re
 
@@ -9,7 +10,7 @@ import re
 # [TODO] Use multiple query search terms if the previous failed
 
 # Canvas API endpoint for the CIS 018 course
-endpoint = "https://k-state.instructure.com/api/v1/courses/89156/"
+endpoint = "https://k-state.instructure.com/api/v1/courses/89156"
 
 # [Deprecated]
 # Gets all users in CIS 018
@@ -66,28 +67,74 @@ def format_header(header):
 
 	return "".join(re.findall('[a-z]', header.lower()))
 
+# Combine first and last name
+def format_fullname(firstname, lastname):
+
+	# We will try to find the user given only a first or last name, but there is no guarantees
+	if type(lastname) is float and math.isnan(lastname):
+		return firstname.capitalize()
+		
+	if type(firstname) is float and math.isnan(firstname):
+		return lastname.capitalize()
+		
+	return "{} {}".format(firstname, lastname).title()
+	
 # Gets all students from the attendance file (CSV)
 def get_attendees(file):
 	
-	headers = ["eid", "email", "firstname", "lastname", "major"]
+	headers = ["eid", "email", "fullname", "firstname", "lastname", "major"]
+
 	attendees = pandas.read_csv(file, header = 0, usecols = lambda header : format_header(header) in headers)
-	
 	attendees.columns = map(format_header, attendees.columns)
 	
 	return attendees
+
+# Grades the given users (assignment) attendance 
+def grade_attendance(asgmt_id, uid):
+
+	# Requires a valid Canvas authentication token
+	with open("token.txt") as token_file:
+
+		token = token_file.readline()
+		form = {"submission": {"posted_grade": "complete"}, "access_token": token}
+		content = {"Content-Type": "application/json"}
+		
+		submission = requests.put("{}/assignments/{}/submissions/{}".format(endpoint, asgmt_id, uid), data = json.dumps(form), headers = content)
+
+# Get unique attribute by order of priority
+def get_unique_attribute(student):
 	
-def verify_attendance(file, only_cs = True):
+	headers = ["eid", "email", "fullname", "firstname", "lastname"]
+
+	for header in headers:
+		if header in student:
+		
+			# Worst case scenario the only unique attribute is their name
+			if header == "firstname" and "lastname" in student:
+				return format_fullname(student["firstname"], student["lastname"])
+				
+			return student[header]
+	return None
+
+# Verify attendance for all users in the attendance file
+def verify_attendance(file, asgmt_id, only_cs = True):
 	
 	# We cut query time down significantly by only validating CS majors
 	# However, there are a few foreseen issues with this method
 	# Therefore, it is NOT recommended unless you know what you are doing
 	for index, student in get_attendees(file).iterrows():
 	
-		if only_cs and format_header(student["major"]) == "computerscience" or not only_cs:
+		if not only_cs or only_cs and "major" in student and format_header(student["major"]) == "computerscience":
 		
-			user = search_users(student["eid"])
-			print(user)			
+			# Search for user using some unique attribute
+			print(get_unique_attribute(student))
+			user = search_users(get_unique_attribute(student))
+			print(user)
+			
+			# If the attendee isn't unique then we need more information
+			if len(user) == 1 and "id" in user[0]:
+				grade_attendance(asgmt_id, user[0]["id"])
+				print("\n")
 	
 	
-#users = get_users("token.txt")	
-verify_attendance("attendance.csv", only_cs = False)
+verify_attendance("attendance.csv", asgmt_id = 999361, only_cs = False)
