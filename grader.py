@@ -8,10 +8,28 @@ import re
 
 # [TODO] Add support for Text and Excel files
 # [TODO] Use multiple query search terms if the previous failed
+# [TODO] Handle cases for attendees with middle names
 
 # Canvas API endpoint for the CIS 018 course
 endpoint = "https://k-state.instructure.com/api/v1/courses/89156"
 
+# Change string to lowercase and remove non-alphabetic characters
+def format_header(header):
+
+	return "".join(re.findall('[a-z]', header.lower()))
+
+# Combine first and last name
+def format_fullname(firstname, lastname):
+
+	# We will try to find the user given only a first or last name, but there is no guarantees
+	if type(lastname) is float and math.isnan(lastname):
+		return firstname.capitalize()
+		
+	if type(firstname) is float and math.isnan(firstname):
+		return lastname.capitalize()
+		
+	return "{} {}".format(firstname, lastname).title()
+	
 # [Deprecated]
 # Gets all users in CIS 018
 def get_users():
@@ -61,23 +79,6 @@ def search_users(term):
 		# Search for the user using the Canvas API
 		user = requests.get("{}/search_users".format(endpoint), data = request_data)
 		return json.loads(user.text)
-		
-# Change string to lowercase and remove non-alphabetic characters
-def format_header(header):
-
-	return "".join(re.findall('[a-z]', header.lower()))
-
-# Combine first and last name
-def format_fullname(firstname, lastname):
-
-	# We will try to find the user given only a first or last name, but there is no guarantees
-	if type(lastname) is float and math.isnan(lastname):
-		return firstname.capitalize()
-		
-	if type(firstname) is float and math.isnan(firstname):
-		return lastname.capitalize()
-		
-	return "{} {}".format(firstname, lastname).title()
 	
 # Gets all students from the attendance file (CSV)
 def get_attendees(file):
@@ -101,7 +102,7 @@ def grade_attendance(asgmt_id, uid):
 		
 		submission = requests.put("{}/assignments/{}/submissions/{}".format(endpoint, asgmt_id, uid), data = json.dumps(form), headers = content)
 
-# Get unique attribute by order of priority
+# Get a unique attribute by order of priority
 def get_unique_attribute(student):
 	
 	headers = ["eid", "email", "fullname", "firstname", "lastname"]
