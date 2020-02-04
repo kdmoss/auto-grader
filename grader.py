@@ -120,9 +120,6 @@ def get_unique_attribute(student):
 # Verify attendance for all users in the attendance file
 def verify_attendance(file, asgmt_id):
 	
-	# We cut query time down significantly by only validating CS majors
-	# However, there are a few foreseen issues with this method
-	# Therefore, it is NOT recommended unless you know what you are doing
 	for index, student in get_attendees(file).iterrows():
 			
 		# Search for user using some unique attribute
@@ -136,4 +133,4 @@ def verify_attendance(file, asgmt_id):
 			print("\n")
 	
 	
-verify_attendance("attendance.csv", asgmt_id = 999361, only_cs = False)
+verify_attendance("attendance.csv", asgmt_id = 999361)
