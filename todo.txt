@@ -1,45 +1,47 @@
-Delay posting for the day of at 8:00am
+Meeting notes (AutoAnnouncer):
+  Delay posting for the day of at 8:00am
+  Prefix title with ATTEND TODAY: <Event Title>
 
-Prefix title with ATTEND TODAY:
-
+Canvas OAuth2:
+  https://canvas.instructure.com/doc/api/file.oauth.html
 
 POST: https://k-state.instructure.com/api/v1/courses/89156/discussion_topics
-Payload: 
-is_announcement: true
-can_group: false
-set_assignment: false
-unpublishable: true
-locked: true
-title: "Testt"
-message: "<p>sfasfasfsafsfsd</p>"
-specific_sections: "all"
-delay_posting: "1"
-delayed_post_at: "2020-08-13T13:00:00.000Z"
-podcast_enabled: "0"
-podcast_has_student_posts: false
-allow_rating: "0"
-only_graders_can_rate: false
-sort_by_rating: false
-last_reply_at: null
-posted_at: null
-lock_at: null
-discussion_type: "side_comment"
-todo_date: null
-summary: "sfasfasfsafsfsd"
-unread_count_tooltip: {zero: "No unread replies.", one: "1 unread reply.", other: "%{count} unread replies."}
-zero: "No unread replies."
-one: "1 unread reply."
-other: "%{count} unread replies."
-reply_count_tooltip: {zero: "No replies.", one: "1 reply.", other: "%{count} replies."}
-zero: "No replies."
-one: "1 reply."
-other: "%{count} replies."
-defaultDates: {dueFor: "Everyone else", dueAt: null, unlockAt: "2020-08-13T13:00:00.000Z", lockAt: null,…}
-dueFor: "Everyone else"
-dueAt: null
-unlockAt: "2020-08-13T13:00:00.000Z"
-lockAt: null
-available: false
-pending: true
-open: null
-closed: null
+  Payload: 
+    is_announcement: true
+    can_group: false
+    set_assignment: false
+    unpublishable: true
+    locked: true
+    title: "Testt"
+    message: "<p>sfasfasfsafsfsd</p>"
+    specific_sections: "all"
+    delay_posting: "1"
+    delayed_post_at: "2020-08-13T13:00:00.000Z"
+    podcast_enabled: "0"
+    podcast_has_student_posts: false
+    allow_rating: "0"
+    only_graders_can_rate: false
+    sort_by_rating: false
+    last_reply_at: null
+    posted_at: null
+    lock_at: null
+    discussion_type: "side_comment"
+    todo_date: null
+    summary: "sfasfasfsafsfsd"
+    unread_count_tooltip: {zero: "No unread replies.", one: "1 unread reply.", other: "%{count} unread replies."}
+    zero: "No unread replies."
+    one: "1 unread reply."
+    other: "%{count} unread replies."
+    reply_count_tooltip: {zero: "No replies.", one: "1 reply.", other: "%{count} replies."}
+    zero: "No replies."
+    one: "1 reply."
+    other: "%{count} replies."
+    defaultDates: {dueFor: "Everyone else", dueAt: null, unlockAt: "2020-08-13T13:00:00.000Z", lockAt: null,…}
+    dueFor: "Everyone else"
+    dueAt: null
+    unlockAt: "2020-08-13T13:00:00.000Z"
+    lockAt: null
+    available: false
+    pending: true
+    open: null
+    closed: null
